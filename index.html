@@ -1,16 +1,62 @@
 <html>  
 
 <head>
-	<script type="text/javascript" src="lib/paintbrush/common.js"></script>
-	<script type="text/javascript" src="lib/paintbrush/paintbrush.js"></script>
+
+	<script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
+
+	<script type="text/javascript" src="lib/pixastic/pixastic.core.js"></script>
+	<script type="text/javascript" src="lib/pixastic/pixastic.jquery.js"></script>
+
+	<script type="text/javascript" src="lib/pixastic/actions/invert.js"></script>
+	<script type="text/javascript" src="lib/pixastic/actions/edges.js"></script>
+	<script type="text/javascript" src="lib/pixastic/actions/posterize.js"></script>
+	<script type="text/javascript" src="lib/pixastic/actions/brightness.js"></script>
+	<script type="text/javascript" src="lib/pixastic/actions/desaturate.js"></script>
+	<script type="text/javascript" src="lib/pixastic/actions/blurfast.js"></script>
+
 </head>
  <body> 
 
+<img src="hand.jpg" width="300" heigth="200" id="myImage" />
 
+<a href="#" id="process">gogogog</a>
 
-<img src="hand.jpg" class="filtered filter-edges filter-greyscale" width="300" heigth="200" />
+<script>
 
+var process = function() {
+	var img = document.getElementById("myImage"); // get the image element
+	if (img.complete) {	// make sure the image is fully loaded
+		var newimg = Pixastic.process(
+			img,
+			"invert"	// brightness/contrast adjustment
+		)
+	}
+}
 
+var processJ = function() {
+	var img = $("#myImage");
+	img .pixastic("edges")
+		.pixastic("desaturate")
+		//.pixastic("blurfast", {amount: 0.1})
+		.pixastic("brightness", {contrast: 100});
+		//.pixastic("posterize", {levels: 1});
 
- </body>  
+/*
+	// get the context
+	var imgDOM = document.getElementById("myImage");
+	console.log(imgDOM);
+	//console.log(processedImg);
+	ctx = imgDOM.getContext("2d");
+
+	var dataDesc = ctx.getImageData(0, 0, rect.width, rect.height);
+*/
+	//console.log(processedImg);
+}
+
+$(document).ready(function() {
+	$("#process").click(processJ);
+});
+</script>
+
+</body>  
 </html> 
