@@ -1,10 +1,10 @@
-var imgWidth = 300;
-var imgHeight = 200;
+var imgWidth = 320;
+var imgHeight = 240;
 
-var process = function() {
+var process = function (ctx) {
 	var img = $("#myImage");
 	img .pixastic("edges")
-		.pixastic("desaturate")
+	      .pixastic("desaturate")
 		//.pixastic("blurfast", {amount: 0.1})
 		.pixastic("brightness", {contrast: 100});
 		//.pixastic("posterize", {levels: 1});
@@ -14,7 +14,7 @@ var process = function() {
 	// get the context
 	var imgDOM = document.getElementById("myImage");
 	console.log(imgDOM);
-	ctx = imgDOM.getContext("2d");
+	//ctx = imgDOM.getContext("2d");
 	var imageData = ctx.getImageData(0, 0, imgWidth, imgHeight);
 
 	// store centroid here temporarily

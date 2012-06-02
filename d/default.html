@@ -23,13 +23,16 @@
 	<script type="text/javascript" src="/lib/pixastic/actions/brightness.js"></script>
 	<script type="text/javascript" src="/lib/pixastic/actions/desaturate.js"></script>
 	<script type="text/javascript" src="/lib/pixastic/actions/blurfast.js"></script>
-
+    <script type="text/javascript" src="/hands.js"></script>
 </head>
 <body>
     <p>Content goes here</p>
 
     <video width="320" height="240" id="v" style="border: 1px solid black"> </video>
     <canvas width="320" height="240" id="myImage"></canvas>
+    <div>
+        <a onclick="snap();">snap !</a>
+    </div>
 
     <script type="text/javascript">
         var mediaCaptureMgr = null;
@@ -43,6 +46,8 @@
         var scenarioId = "1";
         var brightness;
         var contrast;
+
+        
 
         function initCaptureSettings() {
             captureInitSettings = null;
@@ -63,6 +68,16 @@
             }, function () { console.log('u are a looser');});
         }
 
+        function snap() {
+            var video = document.getElementById('v');
+            var canvas = document.getElementById("myImage");
+            var ctx_draw = canvas.getContext('2d');
+            ctx_draw.drawImage(video, 0, 0, 320, 240);
+            process(ctx_draw);
+
+
+        }
+
         function captureVideo() {
             console.log('capture photo');
             var video = document.getElementById('v');
@@ -74,6 +89,9 @@
                 var ctx_draw = canvas.getContext('2d');
                 draw_interval = setInterval(function () {
                     /*
+                    ctx_draw.drawImage(video, 0, 0, 320, 240);
+                    process(ctx_draw);
+                    return;
                     // import the image from the video
                     ctx_draw.drawImage(video, 0, 0, 320, 240);
                     // adding effect chrominance
@@ -92,10 +110,14 @@
                             imageData.data[i + 0] = 255;
                         }
                     }
-                    ctx_draw.putImageData(imageData, 0, 0);*/
-                    process();
+                    ctx_draw.putImageData(imageData, 0, 0);
+                    */
                 }, 1000)
             }, false);
+
+            function getT(ctx_draw) {
+
+            }
 
             // @see http://www.codeproject.com/Articles/38176/Image-Processing-Skin-Detection-Some-Filters-and-E
             function chrominance(ctx_draw) {

@@ -424,7 +424,7 @@ var Pixastic = (function() {
 			hasCanvasImageData : hasCanvasImageData,
 			hasGlobalAlpha : hasGlobalAlpha,
 			isIE : function() {
-				return !!document.all && !!window.attachEvent && !window.opera;
+			    return false;//return !!document.all && !!window.attachEvent && !window.opera;
 			}
 		},
 
