@@ -74,8 +74,40 @@
             var ctx_draw = canvas.getContext('2d');
             ctx_draw.drawImage(video, 0, 0, 320, 240);
             process(ctx_draw);
+            var t = getT(ctx_draw, 200);
+            t = dilatation(t, 5);
+            //t = erosion(t, 5);
 
+            var imageData = ctx_draw.getImageData(0, 0, 320, 240);
+            var l = imageData.data.length;
+            for (i = 0; i < l; i += 4) {
+                var x = i / 4 % 320;
+                var y = Math.floor(i / 4 / 320);
+                //if (t[x][y] === 1) {
+                imageData.data[i + 0] = 255;
+                imageData.data[i + 1] = 0;
+                imageData.data[i + 2] = 0;
+                //}
+            }
+            ctx_draw.putImageData(imageData, 0, 0);
+        }
 
+        function getT(ctx_draw, s) {
+            var imageData = ctx_draw.getImageData(0, 0, 320, 240);
+            var pixels = imageData.data;
+            var t = [];
+            for (var y = 0; y < 320; ++y) {
+                t.push([]);
+            }
+            for (var i = 0; i < pixels.length; i += 4) {
+                var x = i / 4 % 320;
+                var y = Math.floor(i / 4 / 320);
+                if (imageData.data[i + 0] > s)
+                    t[x][y] = 1;
+                else
+                    t[x][y] = 0;
+            }
+            return t;
         }
 
         function captureVideo() {
@@ -115,9 +147,7 @@
                 }, 1000)
             }, false);
 
-            function getT(ctx_draw) {
 
-            }
 
             // @see http://www.codeproject.com/Articles/38176/Image-Processing-Skin-Detection-Some-Filters-and-E
             function chrominance(ctx_draw) {
@@ -147,50 +177,7 @@
                 return t;
             }
 
-            function dilatation(t,radius) {
-                var r=[];
-                for (var y = 0; y < 320; ++y) {
-                    r.push([]);
-                }
-                for (var x = 0; x < 320; ++x) {
-                    for (var y = 0; y < 240; ++y) {
-                        var d = 0;
-                        for (var nx = x - radius; nx < x + radius && d === 0; nx++) {
-                            for (var ny = y - radius; ny < y + radius && d === 0; ny++) {
-                                var tx = Math.min(Math.max(0, nx), 319);
-                                var ty = Math.min(Math.max(0, ny), 239);
-                                if (t[tx][ty] === 1)
-                                    d = 1;
-                            }
-                        }
-                        r[x][y] = d;
-                    }
-                }
-                return r;
-            }
 
-
-            function erosion(t, radius) {
-                var r = [];
-                for (var y = 0; y < 320; ++y) {
-                    r.push([]);
-                }
-                for (var x = 0; x < 320; ++x) {
-                    for (var y = 0; y < 240; ++y) {
-                        var e = 1;
-                        for (var nx = x - radius; nx < x + radius && e === 1; nx++) {
-                            for (var ny = y - radius; ny < y + radius && e === 1; ny++) {
-                                var tx = Math.min(Math.max(0, nx), 319);
-                                var ty = Math.min(Math.max(0, ny), 239);
-                                if (t[tx][ty] === 0)
-                                    e = 0;
-                            }
-                        }
-                        r[x][y] = e;
-                    }
-                }
-                return r;
-            }
 
             /*
             return Windows.Storage.KnownFolders.picturesLibrary.createFileAsync(photoFile, Windows.Storage.CreationCollisionOption.generateUniqueName).then(
@@ -210,6 +197,51 @@
                 });
                 ù*/
         }
+        function dilatation(t, radius) {
+            var r = [];
+            for (var y = 0; y < 320; ++y) {
+                r.push([]);
+            }
+            for (var x = 0; x < 320; ++x) {
+                for (var y = 0; y < 240; ++y) {
+                    var d = 0;
+                    for (var nx = x - radius; nx < x + radius && d === 0; nx++) {
+                        for (var ny = y - radius; ny < y + radius && d === 0; ny++) {
+                            var tx = Math.min(Math.max(0, nx), 319);
+                            var ty = Math.min(Math.max(0, ny), 239);
+                            if (t[tx][ty] === 1)
+                                d = 1;
+                        }
+                    }
+                    r[x][y] = d;
+                }
+            }
+            return r;
+        }
+
+
+        function erosion(t, radius) {
+            var r = [];
+            for (var y = 0; y < 320; ++y) {
+                r.push([]);
+            }
+            for (var x = 0; x < 320; ++x) {
+                for (var y = 0; y < 240; ++y) {
+                    var e = 1;
+                    for (var nx = x - radius; nx < x + radius && e === 1; nx++) {
+                        for (var ny = y - radius; ny < y + radius && e === 1; ny++) {
+                            var tx = Math.min(Math.max(0, nx), 319);
+                            var ty = Math.min(Math.max(0, ny), 239);
+                            if (t[tx][ty] === 0)
+                                e = 0;
+                        }
+                    }
+                    r[x][y] = e;
+                }
+            }
+            return r;
+        }
+
         startDevice();
     </script>
 </body>
