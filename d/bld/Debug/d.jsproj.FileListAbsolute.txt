@@ -16,3 +16,7 @@ C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\resources.
 C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\pri.resfiles
 C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\LanguageQualifiers.txt
 C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\ProjectArchitectures.txt
+C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\priconfig.xml.intermediate
+C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\layout.resfiles.intermediate
+C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\resources.resfiles.intermediate
+C:\Users\marc\Documents\Visual Studio 2012\Projects\hands\d\bld\Debug\pri.resfiles.intermediate
