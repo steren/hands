@@ -32,7 +32,7 @@
     <ProjectConfiguration Include="Release|x86">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
-    </ProjectConfiguration>  
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>d4589608-0151-41a0-a967-f15f50df44ab</ProjectGuid>
@@ -57,6 +57,79 @@
     <Content Include="images\storelogo.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="lib\jquery-1.7.2.js" />
+    <Content Include="lib\paintbrush\.DS_Store" />
+    <Content Include="lib\paintbrush\common.js" />
+    <Content Include="lib\paintbrush\demo\.DS_Store" />
+    <Content Include="lib\paintbrush\demo\css\playground.css" />
+    <Content Include="lib\paintbrush\demo\images\500\165.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\bee.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\bird.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\helmets.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\jordan.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\leaves.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\lighthouse.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\louvre.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\pods.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\redbarn.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\road.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\sign.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\staples.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\stones.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\tear.jpg" />
+    <Content Include="lib\paintbrush\demo\images\500\window.jpg" />
+    <Content Include="lib\paintbrush\demo\images\bg.png" />
+    <Content Include="lib\paintbrush\demo\images\site\bg-highlight.png" />
+    <Content Include="lib\paintbrush\demo\images\site\bg.jpg" />
+    <Content Include="lib\paintbrush\demo\images\site\byline.png" />
+    <Content Include="lib\paintbrush\demo\images\site\current.png" />
+    <Content Include="lib\paintbrush\demo\images\site\divider.png" />
+    <Content Include="lib\paintbrush\demo\images\site\forkme.png" />
+    <Content Include="lib\paintbrush\demo\images\site\heading.png" />
+    <Content Include="lib\paintbrush\demo\index.html" />
+    <Content Include="lib\paintbrush\demo\script\common.js" />
+    <Content Include="lib\paintbrush\demo\script\paintbrush.js" />
+    <Content Include="lib\paintbrush\demo\script\playground.js" />
+    <Content Include="lib\paintbrush\demo\script\timing.js" />
+    <Content Include="lib\paintbrush\demo\usage.html" />
+    <Content Include="lib\paintbrush\LICENSE" />
+    <Content Include="lib\paintbrush\paintbrush.js" />
+    <Content Include="lib\paintbrush\README" />
+    <Content Include="lib\pixastic\actions\blend.js" />
+    <Content Include="lib\pixastic\actions\blur.js" />
+    <Content Include="lib\pixastic\actions\blurfast.js" />
+    <Content Include="lib\pixastic\actions\brightness.js" />
+    <Content Include="lib\pixastic\actions\coloradjust.js" />
+    <Content Include="lib\pixastic\actions\colorhistogram.js" />
+    <Content Include="lib\pixastic\actions\crop.js" />
+    <Content Include="lib\pixastic\actions\desaturate.js" />
+    <Content Include="lib\pixastic\actions\edges.js" />
+    <Content Include="lib\pixastic\actions\edges2.js" />
+    <Content Include="lib\pixastic\actions\emboss.js" />
+    <Content Include="lib\pixastic\actions\flip.js" />
+    <Content Include="lib\pixastic\actions\fliph.js" />
+    <Content Include="lib\pixastic\actions\flipv.js" />
+    <Content Include="lib\pixastic\actions\glow.js" />
+    <Content Include="lib\pixastic\actions\histogram.js" />
+    <Content Include="lib\pixastic\actions\hsl.js" />
+    <Content Include="lib\pixastic\actions\invert.js" />
+    <Content Include="lib\pixastic\actions\laplace.js" />
+    <Content Include="lib\pixastic\actions\lighten.js" />
+    <Content Include="lib\pixastic\actions\mosaic.js" />
+    <Content Include="lib\pixastic\actions\noise.js" />
+    <Content Include="lib\pixastic\actions\pointillize.js" />
+    <Content Include="lib\pixastic\actions\posterize.js" />
+    <Content Include="lib\pixastic\actions\removenoise.js" />
+    <Content Include="lib\pixastic\actions\resize.js" />
+    <Content Include="lib\pixastic\actions\rotate.js" />
+    <Content Include="lib\pixastic\actions\sepia.js" />
+    <Content Include="lib\pixastic\actions\sharpen.js" />
+    <Content Include="lib\pixastic\actions\solarize.js" />
+    <Content Include="lib\pixastic\actions\unsharpmask.js" />
+    <Content Include="lib\pixastic\license.txt" />
+    <Content Include="lib\pixastic\pixastic.core.js" />
+    <Content Include="lib\pixastic\pixastic.jquery.js" />
+    <Content Include="lib\pixastic\README" />
     <None Include="d_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

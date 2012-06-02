@@ -12,12 +12,24 @@
     <!-- d references -->
     <link href="/css/default.css" rel="stylesheet" />
     <script src="/js/default.js"></script>
+    <script type="text/javascript" src="/lib/jquery-1.7.2.js"></script>
+
+	<script type="text/javascript" src="/lib/pixastic/pixastic.core.js"></script>
+	<script type="text/javascript" src="/lib/pixastic/pixastic.jquery.js"></script>
+
+	<script type="text/javascript" src="/lib/pixastic/actions/invert.js"></script>
+	<script type="text/javascript" src="/lib/pixastic/actions/edges.js"></script>
+	<script type="text/javascript" src="/lib/pixastic/actions/posterize.js"></script>
+	<script type="text/javascript" src="/lib/pixastic/actions/brightness.js"></script>
+	<script type="text/javascript" src="/lib/pixastic/actions/desaturate.js"></script>
+	<script type="text/javascript" src="/lib/pixastic/actions/blurfast.js"></script>
+
 </head>
 <body>
     <p>Content goes here</p>
 
     <video width="320" height="240" id="v" style="border: 1px solid black"> </video>
-    <canvas width="320" height="240" id="c"></canvas>
+    <canvas width="320" height="240" id="myImage"></canvas>
 
     <script type="text/javascript">
         var mediaCaptureMgr = null;
@@ -54,13 +66,14 @@
         function captureVideo() {
             console.log('capture photo');
             var video = document.getElementById('v');
-            var canvas = document.getElementById("c");
+            var canvas = document.getElementById("myImage");
             video.src = URL.createObjectURL(mediaCaptureMgr);
             video.play();
 
             video.addEventListener('play', function () {
                 var ctx_draw = canvas.getContext('2d');
                 draw_interval = setInterval(function () {
+                    /*
                     // import the image from the video
                     ctx_draw.drawImage(video, 0, 0, 320, 240);
                     // adding effect chrominance
@@ -79,7 +92,8 @@
                             imageData.data[i + 0] = 255;
                         }
                     }
-                    ctx_draw.putImageData(imageData, 0, 0);
+                    ctx_draw.putImageData(imageData, 0, 0);*/
+                    process();
                 }, 1000)
             }, false);
 
