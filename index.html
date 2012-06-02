@@ -17,23 +17,16 @@
 </head>
  <body> 
 
-<img src="hand.jpg" width="300" heigth="200" id="myImage" />
+<img src="hand.jpg" width="300" height="200" id="myImage" />
 
 <a href="#" id="process">gogogog</a>
 
 <script>
 
-var process = function() {
-	var img = document.getElementById("myImage"); // get the image element
-	if (img.complete) {	// make sure the image is fully loaded
-		var newimg = Pixastic.process(
-			img,
-			"invert"	// brightness/contrast adjustment
-		)
-	}
-}
+var imgWidth = 300;
+var imgHeight = 200;
 
-var processJ = function() {
+var process = function() {
 	var img = $("#myImage");
 	img .pixastic("edges")
 		.pixastic("desaturate")
@@ -41,20 +34,61 @@ var processJ = function() {
 		.pixastic("brightness", {contrast: 100});
 		//.pixastic("posterize", {levels: 1});
 
-/*
+
+
 	// get the context
 	var imgDOM = document.getElementById("myImage");
 	console.log(imgDOM);
-	//console.log(processedImg);
 	ctx = imgDOM.getContext("2d");
+	var imageData = ctx.getImageData(0, 0, imgWidth, imgHeight);
 
-	var dataDesc = ctx.getImageData(0, 0, rect.width, rect.height);
-*/
-	//console.log(processedImg);
+	// store centroid here temporarily
+	var centroidX = Math.floor( imgWidth / 2 );
+	var centroidY = Math.floor( imgHeight / 2 );
+	console.log(centroidX, centroidY);
+
+	var circleRadius = 50.0;
+	var colorChanges = 0;
+
+	var step = 0.1;
+	var treathold = 200;
+
+	var currentAngle = 0;
+	var currentPosX;
+	var currentPosY;
+	var previousColor=0;
+	var currentColor;
+	while (currentAngle < Math.PI*2) {
+		currentAngle += 0.01;
+
+		currentPosX = centroidX + Math.floor(circleRadius * Math.cos(currentAngle));
+		currentPosY = centroidY + Math.floor(circleRadius * Math.sin(currentAngle));
+
+		currentColor = imageData.data[ currentPosX * imgWidth * 4 + currentPosY * 4 ];
+
+		if(Math.abs(previousColor - currentColor) > treathold) {
+			colorChanges++;
+		}
+		previousColor = currentColor;
+	}
+
+	console.log("colorChanges", colorChanges);
+
+	// 
+	//console.log(imageData.data[0 * 4 * ]);
+
+	// draw the circle
+	ctx.strokeStyle = "red";  
+	ctx.beginPath(); 
+	ctx.arc(centroidX, centroidY, circleRadius, circleRadius, Math.PI*2, true);  
+	ctx.closePath();
+	ctx.stroke();
+
+
 }
 
 $(document).ready(function() {
-	$("#process").click(processJ);
+	$("#process").click(process);
 });
 </script>
 
