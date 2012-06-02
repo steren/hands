@@ -47,7 +47,6 @@
         var brightness;
         var contrast;
 
-        
 
         function initCaptureSettings() {
             captureInitSettings = null;
@@ -69,25 +68,58 @@
         }
 
         function snap() {
+            var pixastic = true;
+
             var video = document.getElementById('v');
             var canvas = document.getElementById("myImage");
             var ctx_draw = canvas.getContext('2d');
-            ctx_draw.drawImage(video, 0, 0, 320, 240);
-            process(ctx_draw);
-            var t = getT(ctx_draw, 200);
-            t = dilatation(t, 5);
-            //t = erosion(t, 5);
 
+            if (pixastic) {
+                ctx_draw.drawImage(video, 0, 0, 320, 240);
+                process(ctx_draw);
+                // testDilatation();
+            } else {
+                ctx_draw.drawImage(video, 0, 0, 320, 240);
+                // import the image from the video
+                ctx_draw.drawImage(video, 0, 0, 320, 240);
+                // adding effect chrominance
+                var t = chrominance(ctx_draw);
+                // math morpho
+
+                t = dilatation(t, 2);
+                t = erosion(t, 4);
+
+                var imageData = ctx_draw.getImageData(0, 0, 320, 240);
+                var pixels = imageData.data;
+                for (i = 0; i < pixels.length; i += 4) {
+                    var x = i / 4 % 320;
+                    var y = Math.floor(i / 4 / 320);
+                    if (t[x][y] === 1) {
+                        imageData.data[i + 0] = 255;
+                    }
+                }
+                ctx_draw.putImageData(imageData, 0, 0);
+            }
+
+        }
+
+        function testDilatation() {
+            var canvas = document.getElementById("myImage");
+            var ctx_draw = canvas.getContext('2d');
+            var t = getT(ctx_draw, 200);
+            t = dilatation(t,3);
+            t = erosion(t,3);
+            
             var imageData = ctx_draw.getImageData(0, 0, 320, 240);
             var l = imageData.data.length;
             for (i = 0; i < l; i += 4) {
                 var x = i / 4 % 320;
                 var y = Math.floor(i / 4 / 320);
-                //if (t[x][y] === 1) {
-                imageData.data[i + 0] = 255;
-                imageData.data[i + 1] = 0;
-                imageData.data[i + 2] = 0;
-                //}
+                if (t[x][y] === 1 && imageData.data[i] <= 200) {
+                    imageData.data[i] = 255;
+                    imageData.data[i + 1] = 0;
+                    imageData.data[i + 2] = 0;
+                }
             }
             ctx_draw.putImageData(imageData, 0, 0);
         }
@@ -110,6 +142,34 @@
             return t;
         }
 
+        // @see http://www.codeproject.com/Articles/38176/Image-Processing-Skin-Detection-Some-Filters-and-E
+        function chrominance(ctx_draw) {
+            var imageData = ctx_draw.getImageData(0, 0, 320, 240);
+            var pixels = imageData.data;
+            var t = [];
+            for (var y = 0; y < 320; ++y) {
+                t.push([]);
+            }
+            for (var i = 0; i < pixels.length; i += 4) {
+                var r = imageData.data[i + 0];
+                var g = imageData.data[i + 1];
+                var b = imageData.data[i + 2];
+                var x = i / 4 % 320;
+                var y = Math.floor(i / 4 / 320);
+
+                if (r / g > 1.185 &&
+                    (r * b / ((r + g + b) * (r + g + b))) > 0.107 &&
+                    (r * g / ((r + g + b) * (r + g + b))) > 0.112) {
+                    // skin
+                    imageData.data[i + 0] = 255;
+                    t[x][y] = 1;
+                } else {
+                    t[x][y] = 0;
+                }
+            }
+            return t;
+        }
+
         function captureVideo() {
             console.log('capture photo');
             var video = document.getElementById('v');
@@ -120,63 +180,10 @@
             video.addEventListener('play', function () {
                 var ctx_draw = canvas.getContext('2d');
                 draw_interval = setInterval(function () {
-                    /*
-                    ctx_draw.drawImage(video, 0, 0, 320, 240);
-                    process(ctx_draw);
-                    return;
-                    // import the image from the video
-                    ctx_draw.drawImage(video, 0, 0, 320, 240);
-                    // adding effect chrominance
-                    var t = chrominance(ctx_draw);
-                    // math morpho
-
-                    t = dilatation(t, 2);
-                    t = erosion(t, 4);
-
-                    var imageData = ctx_draw.getImageData(0, 0, 320, 240);
-                    var pixels = imageData.data;
-                    for (i = 0; i < pixels.length; i += 4) {
-                        var x = i / 4 % 320;
-                        var y = Math.floor(i / 4 / 320);
-                        if (t[x][y] === 1) {
-                            imageData.data[i + 0] = 255;
-                        }
-                    }
-                    ctx_draw.putImageData(imageData, 0, 0);
-                    */
+                    // uncomment to auto snap
+                    // snap();
                 }, 1000)
             }, false);
-
-
-
-            // @see http://www.codeproject.com/Articles/38176/Image-Processing-Skin-Detection-Some-Filters-and-E
-            function chrominance(ctx_draw) {
-                var imageData = ctx_draw.getImageData(0,0,320, 240);
-                var pixels = imageData.data;
-                var t = [];
-                for (var y = 0; y < 320; ++y) {
-                    t.push([]);
-                }
-                for (var i = 0; i < pixels.length; i += 4) {
-                    var r = imageData.data[i + 0];
-                    var g = imageData.data[i + 1];
-                    var b = imageData.data[i + 2];
-                    var x = i / 4 % 320;
-                    var y = Math.floor(i / 4 / 320);
-                        
-                    if (r / g > 1.185 &&
-                        (r * b / ((r + g + b) * (r + g + b))) > 0.107 &&
-                        (r * g / ((r + g + b) * (r + g + b))) > 0.112) {
-                        // skin
-                        imageData.data[i + 0] = 255;
-                        t[x][y] = 1;
-                    } else {
-                        t[x][y] = 0;
-                    }
-                }
-                return t;
-            }
-
 
 
             /*
