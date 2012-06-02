@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>d</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0.RC/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0.RC/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0.RC/js/ui.js"></script>
+
+    <!-- d references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+</head>
+<body>
+    <p>Content goes here</p>
+
+    <video width="320" height="240" id="v" style="border: 1px solid black"> </video>
+    <canvas width="320" height="240" id="c"></canvas>
+
+    <script type="text/javascript">
+        var mediaCaptureMgr = null;
+        var photoFile = "photo.jpg";
+        var recordState = null;
+        var captureInitSettings = null;
+        var encodingProfile = null;
+        var storageFile = null;
+        var photoStorage = null;
+        var cameraControlSliders = null;
+        var scenarioId = "1";
+        var brightness;
+        var contrast;
+
+        function initCaptureSettings() {
+            captureInitSettings = null;
+            captureInitSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
+            captureInitSettings.audioDeviceId = "";
+            captureInitSettings.videoDeviceId = "";
+            captureInitSettings.photoCaptureSource = Windows.Media.Capture.PhotoCaptureSource.videoPreview;
+            captureInitSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.audioAndVideo;
+        }
+        initCaptureSettings();
+
+        function startDevice() {
+            console.log('startDevice');
+            mediaCaptureMgr = new Windows.Media.Capture.MediaCapture();
+            
+            mediaCaptureMgr.initializeAsync(captureInitSettings).done(function (result) {
+                captureVideo();
+            }, function () { console.log('u are a looser');});
+        }
+
+        function captureVideo() {
+            console.log('capture photo');
+            var video = document.getElementById('v');
+            var canvas = document.getElementById("c");
+            video.src = URL.createObjectURL(mediaCaptureMgr);
+            video.play();
+
+            video.addEventListener('play', function () {
+                var ctx_draw = canvas.getContext('2d');
+                draw_interval = setInterval(function () {
+                    // import the image from the video
+                    ctx_draw.drawImage(video, 0, 0, 320, 240);
+                    // adding effect chrominance
+                    var t = chrominance(ctx_draw);
+                    // math morpho
+
+                    t = dilatation(t, 2);
+                    t = erosion(t, 4);
+
+                    var imageData = ctx_draw.getImageData(0, 0, 320, 240);
+                    var pixels = imageData.data;
+                    for (i = 0; i < pixels.length; i += 4) {
+                        var x = i / 4 % 320;
+                        var y = Math.floor(i / 4 / 320);
+                        if (t[x][y] === 1) {
+                            imageData.data[i + 0] = 255;
+                        }
+                    }
+                    ctx_draw.putImageData(imageData, 0, 0);
+                }, 1000)
+            }, false);
+
+            // @see http://www.codeproject.com/Articles/38176/Image-Processing-Skin-Detection-Some-Filters-and-E
+            function chrominance(ctx_draw) {
+                var imageData = ctx_draw.getImageData(0,0,320, 240);
+                var pixels = imageData.data;
+                var t = [];
+                for (var y = 0; y < 320; ++y) {
+                    t.push([]);
+                }
+                for (var i = 0; i < pixels.length; i += 4) {
+                    var r = imageData.data[i + 0];
+                    var g = imageData.data[i + 1];
+                    var b = imageData.data[i + 2];
+                    var x = i / 4 % 320;
+                    var y = Math.floor(i / 4 / 320);
+                        
+                    if (r / g > 1.185 &&
+                        (r * b / ((r + g + b) * (r + g + b))) > 0.107 &&
+                        (r * g / ((r + g + b) * (r + g + b))) > 0.112) {
+                        // skin
+                        imageData.data[i + 0] = 255;
+                        t[x][y] = 1;
+                    } else {
+                        t[x][y] = 0;
+                    }
+                }
+                return t;
+            }
+
+            function dilatation(t,radius) {
+                var r=[];
+                for (var y = 0; y < 320; ++y) {
+                    r.push([]);
+                }
+                for (var x = 0; x < 320; ++x) {
+                    for (var y = 0; y < 240; ++y) {
+                        var d = 0;
+                        for (var nx = x - radius; nx < x + radius && d === 0; nx++) {
+                            for (var ny = y - radius; ny < y + radius && d === 0; ny++) {
+                                var tx = Math.min(Math.max(0, nx), 319);
+                                var ty = Math.min(Math.max(0, ny), 239);
+                                if (t[tx][ty] === 1)
+                                    d = 1;
+                            }
+                        }
+                        r[x][y] = d;
+                    }
+                }
+                return r;
+            }
+
+
+            function erosion(t, radius) {
+                var r = [];
+                for (var y = 0; y < 320; ++y) {
+                    r.push([]);
+                }
+                for (var x = 0; x < 320; ++x) {
+                    for (var y = 0; y < 240; ++y) {
+                        var e = 1;
+                        for (var nx = x - radius; nx < x + radius && e === 1; nx++) {
+                            for (var ny = y - radius; ny < y + radius && e === 1; ny++) {
+                                var tx = Math.min(Math.max(0, nx), 319);
+                                var ty = Math.min(Math.max(0, ny), 239);
+                                if (t[tx][ty] === 0)
+                                    e = 0;
+                            }
+                        }
+                        r[x][y] = e;
+                    }
+                }
+                return r;
+            }
+
+            /*
+            return Windows.Storage.KnownFolders.picturesLibrary.createFileAsync(photoFile, Windows.Storage.CreationCollisionOption.generateUniqueName).then(
+                function (newFile) {
+                    photoStorage = newFile;
+                    var photoProperties = Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg();
+                    mediaCaptureMgr.capturePhotoToStorageFileAsync(photoProperties, photoStorage).done(
+                    function (result) {
+                        document.getElementById('i').src = URL.createObjectURL(photoStorage, { oneTimeOnly: true });
+                    },
+                    function capturePhotoError(error) {
+                        console.log("An exception occurred trying to capturePhoto: " + error.message);
+                    });
+                },
+                function (error) {
+                    console.log('capture async exception' + error.message);
+                });
+                ù*/
+        }
+        startDevice();
+    </script>
+</body>
+</html>
+
+
